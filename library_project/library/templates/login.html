@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* General Reset */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #6a11cb, #34d399);
+            color: white;
+            color: #333;
+        }
+
+        /* Card Container */
+        .form-container {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Form Heading */
+        h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #1f0fb1; /* Modern Green */
+        }
+
+        /* Error Message */
+        .error {
+            color: #ff4d4d;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        /* Form Labels */
+        label {
+            display: block;
+            text-align: left;
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        /* Form Inputs */
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Submit Button */
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #04968a, #0e0adb); /* Green Gradient */
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #b81085, #1703c9); /* Reverse Gradient */
+        }
+
+        /* Link to Home */
+        a {
+            text-decoration: none;
+            color: #6b0b5e;
+            font-size: 14px;
+            margin-top: 15px;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #110f8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Login</h1>
+        {% if error %}<p class="error">{{ error }}</p>{% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" placeholder="Enter your username" required>
+            
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" placeholder="Enter your password" required>
+            
+            <button type="submit">Login</button>
+        </form>
+        <a href="{% url 'landing_page' %}">Back to Home</a>
+    </div>
+</body>
+</html>
+
+
+

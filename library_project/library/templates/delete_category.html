@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Category</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #e74c3c;
+            margin-bottom: 20px;
+        }
+
+        /* Confirmation Card */
+        .confirmation-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 400px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        button,
+        .cancel-link {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #c0392b;
+        }
+
+        .cancel-link {
+            background-color: #3498db;
+            color: white;
+            border: none;
+        }
+
+        .cancel-link:hover {
+            background-color: #2980b9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .confirmation-card {
+                width: 90%;
+                padding: 15px;
+            }
+
+            button,
+            .cancel-link {
+                font-size: 14px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Confirmation Card -->
+    <div class="confirmation-card">
+        <h1>Delete Category</h1>
+        <p>Are you sure you want to delete "<strong>{{ category.name }}</strong>"?</p>
+        <form method="post" class="button-group">
+            {% csrf_token %}
+            <button type="submit">Yes, Delete</button>
+            <a href="{% url 'view_categories' %}" class="cancel-link">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>
