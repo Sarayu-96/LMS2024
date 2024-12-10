@@ -10,6 +10,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
 
 
 
@@ -221,6 +223,66 @@
             color: rgb(176, 11, 190); /* Change text color on hover */
             text-decoration: underline; /* Add underline on hover */
         }
+        .star-rating {
+        direction: ltr;
+        display: inline-block;
+    }
+    .star-rating input {
+        display: none;
+    }
+    .star-rating .star {
+        color: #ccc;
+        font-size: 2rem;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+    .star-rating input:checked ~ .star {
+        color: #FFD700; /* Gold color for filled stars */
+    }
+    .star-rating input:checked ~ .star:hover {
+        color: #FFD700;
+    }
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: #FFD700;
+    }.star-rating {
+        direction: ltr;
+        display: inline-block;
+    }
+    .star-rating input {
+        display: none;
+    }
+    .star-rating .star {
+        color: #ccc;
+        font-size: 2rem;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+    .star-rating input:checked ~ .star {
+        color: #FFD700; /* Gold color for filled stars */
+    }
+    .star-rating input:checked ~ .star:hover {
+        color: #FFD700;
+    }
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: #FFD700;
+    }
+    .wishlist-icon {
+    font-size: 1.5rem;
+    color: #ddd; /* Light grey by default */
+    transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+/* When hovering over the icon, make it red */
+.wishlist-icon:hover {
+    color: #ff3366; /* Red color on hover */
+}
+
+/* When the heart is clicked and added to wishlist (if needed), fill the heart */
+.wishlist-icon.filled {
+    color: #ff3366; /* Red color when filled */
+}
     </style>
 </head>
 
@@ -324,27 +386,187 @@
                 </div>
             </div>
 
-            <!-- Book Collection -->
-            <div class="container my-5">
-                <h1 class="text-center mb-5">Best Sellers</h1>
-
+            <!-- Book Details -->
+            <div class="container mt-5">
                 <div class="row">
-                    {% for book in books %}
-                    <div class="col-md-3 col-sm-6">
-                        <div class="book-card">
-                            <img src="{{ book.image.url }}" alt="{{ book.title }}" class="img-fluid">
-                            <div class="book-title">{{ book.title }}</div>
-                            <div class="book-author">{{ book.author }}</div>
-                            <div class="book-price">₹{{ book.price }}</div><br>
-                            <div><a href="{% url 'view_book_details' book.id %}" class="view-details-btn">View Details</a>
-                            </div>
+                    <!-- Book Cover -->
+                    <div class="col-md-4 text-center">
+                        <img src="{{ book.image.url }}" alt="{{ book.title }}" class="img-fluid rounded shadow" />
+                    </div>
+            
+                    <!-- Book Information -->
+                    <div class="col-md-8">
+                        <h2 class="fw-bold">{{ book.title }}</h2>
+                        <p class="text-muted">By <span class="text-primary fw-bold">{{ author.name }}</span></p>
+                        <div>
+                            <button class="btn p-0" style="background: none; border: none;">
+                                <i class="far fa-heart wishlist-icon" onclick="addToWishlist()"></i>
+                            </button>
+                        </div>
+                        
+                        <table class="mt-4">
+                            <tbody>
+                                <tr>
+                                    <th>Title</th>
+                                    <td>{{ book.title }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Price</th>
+                                    <td>${{ book.price }}</td>
+                                </tr>
+                                <tr>
+                                    <th>ISBN</th>
+                                    <td>{{ book.isbn }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Language</th>
+                                    <td>{{ book.language }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Publisher</th>
+                                    <td>{{ book.publisher }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Pages</th>
+                                    <td>{{ book.pages }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Edition</th>
+                                    <td>{{ book.edition }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Genre</th>
+                                    <td>{{ book.genre.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Stock</th>
+                                    <td>
+                                        {% if book.stock == 0 %}
+                                            <span style="color: red; font-weight: bold;">Out of Stock</span>
+                                        {% else %}
+                                            <span style="color: green; font-weight: bold;">Available</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+            
+                        
+            
+                        <!-- Buttons for Rent and Buy -->
+                        <div class="d-flex gap-2 justify-content-end mt-4">
+                            <button class="btn btn-warning d-flex align-items-center" style="font-weight: bold;" onclick="addToCart()">
+                                <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+                            </button>
+                            <button class="btn btn-danger btn-lg" style="min-width: 150px; font-weight: bold;"><i class="fas fa-calendar-check me-2"></i>Rent</button>
+                            <button class="btn btn-success btn-lg" style="min-width: 150px; font-weight: bold;
+                                {% if book.stock == 0 %} 
+                                    background-color : #ddd; color: #bbb; pointer-events: none; 
+                                {% endif %}">
+                                Buy
+                            </button>
                         </div>
                     </div>
-                    {% empty %}
-                    <p>No books available.</p>
-                    {% endfor %}
                 </div>
             </div>
+            <hr>
+            <!-- Book Summary Section -->
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-9">
+                    <h4 class="fw-bold text-center mb-3" style="font-size: 1.8rem; color: #333;">Book Summary</h4><br>
+                    
+                    <p class="text-justify" style="font-size: 1rem; line-height: 1.6; color: #555;">
+                        {{ book.description }}
+                    </p>
+                </div>
+            </div>
+            
+            <br>
+            <div class="container mt-5">
+                <h3 class="fw-bold text-center mb-4">Write A Review</h3>
+                
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="border p-4 rounded shadow-lg bg-light">
+                            <form action="/submit_review" method="POST">
+                                <div class="row mb-4">
+                                    <div class="col-md-12">
+                                        <p class="text-center">Product name: <strong>{{book.title}}</strong></p>
+                                    </div>
+                                </div>
+            
+                                <!-- Review Title -->
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label for="reviewTitle" class="form-label">Review Title</label>
+                                        <input type="text" class="form-control" id="reviewTitle" name="review_title" required>
+                                    </div>
+                                </div>
+            
+                                <!-- Star Rating -->
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label for="rating" class="form-label">Your Ratings</label>
+                                        <div class="star-rating">
+                                            <input type="radio" id="star5" name="rating" value="5" />
+                                            <label for="star5" class="star">&#9733;</label>
+                                            <input type="radio" id="star4" name="rating" value="4" />
+                                            <label for="star4" class="star">&#9733;</label>
+                                            <input type="radio" id="star3" name="rating" value="3" />
+                                            <label for="star3" class="star">&#9733;</label>
+                                            <input type="radio" id="star2" name="rating" value="2" />
+                                            <label for="star2" class="star">&#9733;</label>
+                                            <input type="radio" id="star1" name="rating" value="1" />
+                                            <label for="star1" class="star">&#9733;</label>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <!-- Your Message -->
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label for="reviewMessage" class="form-label">Your Message</label>
+                                        <textarea class="form-control" id="reviewMessage" name="review_message" rows="5" required></textarea>
+                                    </div>
+                                </div>
+            
+                                <!-- Submit Button -->
+                                <div class="row mb-4">
+                                    <div class="col-md-12 text-center">
+                                        <button type="submit" class="btn btn-success btn-md w-50">Submit Review</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+
+        <!-- Other Books by the Author -->
+        <div class="other-books">
+            <h3>Other Books by {{ author.name }}</h3>
+            <div class="row">
+                {% for other_book in books %}
+                <div class="col-md-3">
+                    <div class="book-card">
+                        <img src="{{ other_book.image.url }}" alt="{{ other_book.title }}" />
+                        <h4 class="book-title">{{ other_book.title }}</h4>
+                        <a href="{% url 'view_book_details' other_book.id %}" class="btn btn-sm btn-primary mt-2">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+            
             <footer class="sticky-bottom">
                 <p>&copy; 2024 ReadIt. All rights reserved. <a href="/privacy">Privacy Policy</a></p>
             </footer>
@@ -365,6 +587,15 @@
                     document.getElementById("searchInput").value = '';
                     window.location.href = "/search";  // Reset to search page without query
                 }
+                function addToWishlist() {
+    var icon = document.querySelector('.wishlist-icon');
+    
+    // Toggle the 'filled' class on click to fill/unfill the heart
+    icon.classList.toggle('filled');
+
+    // Optionally, add your logic to add the item to the wishlist here
+    alert("Added to Wishlist!");
+}
             </script>
 </body>
 

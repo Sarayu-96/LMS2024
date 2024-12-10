@@ -108,13 +108,18 @@
     <h1>Add Category</h1>
 
     <!-- Form Container -->
-    <div class="form-container">
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Save</button>
-        </form>
-    </div>
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        
+        <h3>Add a New Category</h3>
+        {{form.as_p}}
+    
+        
+        <h3>Select Subscription Plans</h3>
+        
+        
+        <button type="submit">Save</button>
+    </form>
 
     <!-- Back Link -->
     <a href="{% url 'view_categories' %}" class="back-link">Back to Categories</a>

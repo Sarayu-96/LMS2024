@@ -102,14 +102,21 @@
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <h1>Update Category: {{ category.name }}</h1>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Update</button>
-        </form>
-        <a href="{% url 'view_categories' %}" class="back-link">Back to Categories</a>
-    </div>
+    <form method="POST">
+        {% csrf_token %}
+        <div>
+            <label for="id_name">Category Name:</label>
+            {{ form.name }}
+            <!-- {% for field in form %}
+                <p>{{ field.label }}: {{ field }}</p>
+            {% endfor %} -->
+        </div>
+        <div>
+            <label for="id_plans">Plans:</label>
+            {{ form.plans }}
+        </div>
+        <button type="submit">Update Category</button>
+    </form>
+    
 </body>
 </html>

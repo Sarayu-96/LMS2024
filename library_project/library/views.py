@@ -2,8 +2,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import AuthorForm, BookForm, CategoryForm,PlanForm
-from .models import Author, Genre, Book, Plan
+from .forms import AuthorForm, BookForm, CategoryForm,PlanForm, PlanCategoryForm
+from .models import Author, Genre, Book, Plan, Plancategory
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import JsonResponse
@@ -42,7 +42,8 @@ def librarian_dashboard(request):
 
 @login_required
 def student_dashboard(request):
-    return render(request, 'student_dashboard.html', {'user': request.user})
+    books = Book.objects.all()
+    return render(request, 'student_dashboard.html', {'user': request.user, 'books':books})
 
 
 def register_view(request):
@@ -135,6 +136,13 @@ def list_books(request):
 def view_books(request):
     books = Book.objects.all()
     return render(request, 'home_page.html', {'books': books})
+
+def view_book_details(request,book_id):
+    # print(book_id)
+    book = get_object_or_404(Book, id=book_id)
+    author = book.author 
+    allbooks = author.books.all()
+    return render(request, 'view_book_details.html', {'author': author, 'books': allbooks ,'book': book, 'user': request.user})
 
 def edit_book(request, book_id):
     book = get_object_or_404(Book, id=book_id)
@@ -284,6 +292,7 @@ def view_categories(request):
 
 # Add a new category
 def add_category(request):
+    # plan=Plan.objects.all()
     if request.method == 'POST':
         form = CategoryForm(request.POST)
         if form.is_valid():
@@ -294,15 +303,26 @@ def add_category(request):
     return render(request, 'add_category.html', {'form': form})
 
 # Update an existing category
-def update_category(request, genre_id):
-    category = get_object_or_404(Genre, id=genre_id)
+def edit_category(request, category_id):
+    category = get_object_or_404(Genre, id=category_id)  # Fetch category
+    related_plans = Plancategory.objects.filter(genre=category)
+
     if request.method == 'POST':
-        form = CategoryForm(request.POST, instance=category)
+        form = PlanCategoryForm(request.POST)
         if form.is_valid():
-            form.save()
+            category.name = form.cleaned_data['name']
+            category.save()
+            Plancategory.objects.filter(genre=category).delete()
+            plans = form.cleaned_data['plans']
+            for plan in plans:
+                Plancategory.objects.create(plan=plan, genre=category)
             return redirect('view_categories')
     else:
-        form = CategoryForm(instance=category)
+        form = PlanCategoryForm(initial={
+            'name': category.name,  # Pre-fill name
+            'plans': related_plans.values_list('plan', flat=True),  # Pre-select plans
+        })
+
     return render(request, 'update_category.html', {'form': form, 'category': category})
 
 # Delete a category
@@ -336,8 +356,9 @@ def add_modal_author(request):
 
 def view_plans(request):
     form = PlanForm()
+    plangenre_form = PlanCategoryForm()
     plans = Plan.objects.all()
-    return render(request, 'view_plans.html', {'plans': plans, 'form': form})
+    return render(request, 'view_plans.html', {'plans': plans, 'form': form, 'plangenre_form': plangenre_form})
 
 def add_plan(request):
     if request.method == "POST":
@@ -359,16 +380,35 @@ def add_plan(request):
 
 def edit_plan(request, plan_id):
     plan = get_object_or_404(Plan, id=plan_id)
+    all_genres = Genre.objects.all()
+    associated_genres = Plancategory.objects.filter(plan=plan).values_list('genre_id', flat=True)
+    plan_category_form = PlanCategoryForm(request.POST)
 
     if request.method == 'POST':
-        form = PlanForm(request.POST, instance=plan)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'success': True})
-        else:
-            return JsonResponse({'success': False, 'error': form.errors})
-    
-    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+        # Update plan fields
+        plan.name = request.POST['name']
+        plan.price = request.POST['price']
+        plan.duration_days = request.POST['duration_days']
+        plan.description = request.POST['description']
+        plan.max_books_allowed = request.POST['max_books_allowed']
+        plan.max_rent_duration = request.POST['max_rent_duration']
+        plan.save()
+
+        # Update associated genres
+        selected_genres = request.POST.getlist('genres')
+        Plancategory.objects.filter(plan=plan).delete()  # Clear existing associations
+        for genre_id in selected_genres:
+            genre = Genre.objects.get(id=genre_id)
+            Plancategory.objects.create(plan=plan, genre=genre)
+
+        return JsonResponse({'success': True})
+
+    return render(request, 'view_plans.html', {
+        'plan': plan,
+        'all_genres': all_genres,
+        'associated_genres': associated_genres,
+        'plan_category_form' : plan_category_form
+    })
 
 def delete_plan(request, plan_id):
     # Fetch the plan object from the database
@@ -380,6 +420,33 @@ def delete_plan(request, plan_id):
         return JsonResponse({'success': True})
     
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
+
+def add_category(request):
+    if request.method == 'POST':
+        category_form = CategoryForm(request.POST)
+        plan_category_form = PlanCategoryForm(request.POST)
+
+        if category_form.is_valid() and plan_category_form.is_valid():
+            # Save the category (genre)
+            genre = category_form.save()
+
+            # Get selected plans from the form
+            selected_plans = plan_category_form.cleaned_data['plans']
+
+            # Create PlanCategory for each selected plan
+            for plan in selected_plans:
+                Plancategory.objects.create(plan=plan, genre=genre)
+
+            return redirect('view_categories')  # Redirect to a success page
+
+    else:
+        category_form = CategoryForm()
+        plan_category_form = PlanCategoryForm()
+
+    return render(request, 'add_category.html', {
+        'category_form': category_form,
+        'plan_category_form': plan_category_form
+    })
     
     # else:
     #     # Pre-fill the form with existing plan data

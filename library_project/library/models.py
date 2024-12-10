@@ -15,6 +15,18 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.name
+
+class Plan(models.Model):
+     name = models.CharField(max_length=50)  # Plan name (e.g., Basic, Silver, Gold, Platinum)
+     price = models.DecimalField(max_digits=10, decimal_places=2)  # Price of the plan
+     duration_days = models.PositiveIntegerField()  # Duration in months
+     description = models.TextField(null=True, blank=True)
+     max_books_allowed = models.PositiveIntegerField(default=5, help_text="Maximum number of books a user can rent")
+     max_rent_duration = models.PositiveIntegerField(default=30, help_text="Maximum duration (in days) to rent books")
+     created_at = models.DateTimeField(auto_now_add=True)  # Date when the plan was created
+     updated_at = models.DateTimeField(auto_now=True)  # Date when the plan was last updated
+     def __str__(self):
+        return self.name
     
 
 class Book(models.Model):
@@ -38,16 +50,23 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Plancategory(models.Model):
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name='plans')
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, related_name='plans')
 
-class Plan(models.Model):
-     name = models.CharField(max_length=50)  # Plan name (e.g., Basic, Silver, Gold, Platinum)
-     price = models.DecimalField(max_digits=10, decimal_places=2)  # Price of the plan
-     duration_days = models.PositiveIntegerField()  # Duration in months
-     description = models.TextField(null=True, blank=True)
-     max_books_allowed = models.PositiveIntegerField(default=5, help_text="Maximum number of books a user can rent")
-     max_rent_duration = models.PositiveIntegerField(default=30, help_text="Maximum duration (in days) to rent books")
-     created_at = models.DateTimeField(auto_now_add=True)  # Date when the plan was created
-     updated_at = models.DateTimeField(auto_now=True)  # Date when the plan was last updated
+    def __str__(self):
+        return f"{self.plan.name}"
+
+
+
+
+
+
+    
+
+
+
 
 
      

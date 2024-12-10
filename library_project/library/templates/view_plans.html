@@ -250,6 +250,18 @@
                                 {{ form.max_rent_duration|add_class:"form-control" }}
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label for="id_genres" class="form-label">Select Genres</label>
+                            <div id="editPlanGenres">
+                                {% for genre in all_genres %}
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" 
+                                           id="genre{{ genre.id }}" name="genres" value="{{ genre.id }}">           
+                                    <label class="form-check-label" for="genre{{ genre.id }}">{{ genre.name }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>                  
                         <div class="row mb-3">
                             <div class="col-12 text-center">
                                 <button type="submit" class="btn btn-success">Add Plan</button>
@@ -296,6 +308,10 @@
                         <div class="mb-3">
                             <label for="editPlanMaxduration" class="form-label">Max. Rent Duration</label>
                             <input type="number"  class="form-control" id="editPlanMaxduration" name="max_rent_duration">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPlanGenres" class="form-label">Genres</label>
+
                         </div>
                         <button type="submit" class="btn btn-primary">Update Plan</button>
                     </form>
@@ -425,6 +441,19 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async func
     console.error('Error deleting the plan:', error);
     alert('An error occurred while deleting the plan.');
   }
+});
+
+editPlanModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+    const planId = button.getAttribute('data-id');
+    const genres = JSON.parse(button.getAttribute('data-genres'));
+
+    document.getElementById('editPlanId').value = planId;
+
+    const checkboxes = document.querySelectorAll('#editPlanGenres .form-check-input');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = genres.includes(parseInt(checkbox.value));
+    });
 });
 
 

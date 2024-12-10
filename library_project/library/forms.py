@@ -1,6 +1,11 @@
 from django import forms
 from django.contrib.auth.models import User  # Built-in User model
-from .models import Author, Book, Genre, Plan # Other model imports
+from .models import Author, Book, Genre, Plan, Plancategory # Other model imports
+from django.forms import modelformset_factory
+
+# Create a formset for PlanCategory
+PlanCategoryFormSet = modelformset_factory(Plancategory, fields=('plan', 'genre'), extra=1)
+
 
 class userRegistrationForm(forms.ModelForm):
     password = forms.CharField(
@@ -56,5 +61,33 @@ class PlanForm(forms.ModelForm):
     class Meta:
         model = Plan
         fields =  ['name', 'price', 'duration_days','description','max_books_allowed','max_rent_duration']
+
+# class PlanCategoryForm(forms.ModelForm):
+#     class Meta:
+#         model = Plancategory
+#         fields = ['plan', 'genre'] 
+
+class PlanCategoryForm(forms.ModelForm):
+    name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        label="Category Name"
+    )
+    plans = forms.ModelMultipleChoiceField(
+        queryset=Plan.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=True,
+        label="Select Plans"
+    )
+    genres = forms.ModelMultipleChoiceField(
+        queryset=Genre.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=True,
+        label="Select Genres"
+    )
+
+    class Meta:
+        model = Plancategory  # Assuming Category is the model to which plans and genres are related
+        fields = ['name', 'plans', 'genres']
 
 
