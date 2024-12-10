@@ -1,0 +1,470 @@
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Membership Plans</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        .plan {
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .plan .plan-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .plan .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #28a745;
+            margin-top: 10px;
+        }
+
+        .plan .plan-description {
+            font-size: 1rem;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .plan-actions {
+            display: flex;
+            justify-content: flex-start;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .edit-btn {
+            color: #f39c12;
+        }
+
+        .edit-btn:hover {
+            color: #e67e22;
+        }
+
+        .delete-btn {
+            color: #e74c3c;
+        }
+
+        .delete-btn:hover {
+            color: #c0392b;
+        }
+
+        hr {
+            border: 1px solid #ddd;
+            margin: 20px 0;
+        }
+
+        .add-author-floating-btn {
+            position: fixed;
+            bottom: 349px;
+            left: 0px;
+            padding: 13px 38px;
+            background-color: #3267c3;
+            color: white;
+            font-size: 28px;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 21px rgba(0, 0, 0, 7.3);
+            cursor: pointer;
+            transition: background-color 1.3s ease;
+        }
+
+        .add-author-floating-btn:hover {
+            background-color: #78b319;
+        }
+
+        .modal-dialog.modal-lg {
+            max-width: 800px;
+        }
+
+        .form-control {
+            border-radius: 15px;
+            box-shadow: inset 0 6px 416px rgba(0, 0, 0, 0.1);
+            padding: 12px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .form-text {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .btn-success {
+            background-color: #095f3e;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 12px 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background-color: #6e3108;
+        }
+
+        .modal-header {
+            background-color: #0c3118;
+            color: white;
+            font-weight: 600;
+            padding: 20px 30px;
+            border-bottom: 2px solid #00b368;
+        }
+
+        @media (max-width: 768px) {
+            .modal-dialog.modal-lg {
+                max-width: 100%;
+            }
+
+            .form-control {
+                font-size: 0.95rem;
+            }
+
+            .modal-body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="add-author-container">
+        <button type="button" class="add-author-floating-btn" data-bs-toggle="modal" data-bs-target="#addPlanModal">+
+            Add Plan</button>
+    </div>
+
+    <div class="container">
+        <h1 class="text-center mb-5">Manage Membership Plans</h1>
+    
+        <!-- Loop through each plan -->
+        {% for plan in plans %}
+        <div class="plan border rounded p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="plan-name mb-1">{{ plan.name }}</h4>
+                    <p class="plan-description text-muted mb-1">{{ plan.description }}</p>
+                    <p class="price mb-0">₹{{ plan.price }} for {{ plan.duration_days }} days</p>
+                    <p class="text-muted small">Max Books Allowed: {{ plan.max_books_allowed }}</p>
+                    <p class="text-muted small">Max Rent Duration: {{ plan.max_rent_duration }} days</p>
+                </div>
+    
+                <!-- Action Buttons -->
+                <div class="plan-actions">
+                    <!-- Edit Button -->
+                    <a href="#" class="action-btn edit-btn" data-bs-toggle="modal"
+                        data-bs-target="#editPlanModal" data-id="{{ plan.id }}" data-name="{{ plan.name }}"
+                        data-price="{{ plan.price }}" data-duration="{{ plan.duration_days }}"
+                        data-description="{{ plan.description }}" data-maxbook="{{ plan.max_books_allowed }}"
+                        data-maxduration="{{ plan.max_rent_duration }}">
+                        <i class="fas fa-edit me-1"></i> 
+                    </a>
+    
+                    <!-- Delete Button -->
+                    <a href="#" class="action-btn delete-btn" data-plan-id="{{ plan.id }}">
+                        <i class="fas fa-trash me-1"></i> 
+                    </a>
+                </div>
+            </div>
+        </div>
+        <hr>
+        {% endfor %}
+    </div>
+    
+
+    <!-- Modal for Adding a Plan -->
+    <div class="modal fade" id="addPlanModal" tabindex="-1" aria-labelledby="addPlanModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPlanModalLabel">Add New Plan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addPlanForm" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label for="id_plan_name" class="form-label">Plan Name</label>
+                                {{ form.name|add_class:"form-control" }}
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label for="id_price" class="form-label">Price</label>
+                                {{ form.price|add_class:"form-control" }}
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label for="id_duration" class="form-label">Duration (Days)</label>
+                                {{ form.duration_days|add_class:"form-control" }}
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label for="id_description" class="form-label">Description</label>
+                                {{ form.description|add_class:"form-control" }}
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label for="id_maxbook" class="form-label">Max. Books Allowed</label>
+                                {{ form.max_books_allowed|add_class:"form-control" }}
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label for="id_maxduration" class="form-label">Max. Rent Duration</label>
+                                {{ form.max_rent_duration|add_class:"form-control" }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_genres" class="form-label">Select Genres</label>
+                            <div id="editPlanGenres">
+                                {% for genre in all_genres %}
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" 
+                                           id="genre{{ genre.id }}" name="genres" value="{{ genre.id }}">           
+                                    <label class="form-check-label" for="genre{{ genre.id }}">{{ genre.name }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>                  
+                        <div class="row mb-3">
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-success">Add Plan</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Editing a Plan -->
+    <div class="modal fade" id="editPlanModal" tabindex="-1" aria-labelledby="editPlanModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPlanModalLabel">Edit Plan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editPlanForm" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" id="editPlanId" name="id">
+                        <div class="mb-3">
+                            <label for="editPlanName" class="form-label">Plan Name</label>
+                            <input type="text" class="form-control" id="editPlanName" name="name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPlanPrice" class="form-label">Price</label>
+                            <input type="number" class="form-control" id="editPlanPrice" name="price">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPlanDuration" class="form-label">Duration (Days)</label>
+                            <input type="number" class="form-control" id="editPlanDuration" name="duration_days">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPlanDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editPlanDescription" name="description"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPlanMaxbook" class="form-label">Max. Books Allowed</label>
+                            <input type="number" class="form-control" id="editPlanMaxbook" name="max_books_allowed">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPlanMaxduration" class="form-label">Max. Rent Duration</label>
+                            <input type="number"  class="form-control" id="editPlanMaxduration" name="max_rent_duration">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPlanGenres" class="form-label">Genres</label>
+
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Plan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deletePlanModal" tabindex="-1" aria-labelledby="deletePlanModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deletePlanModalLabel">Confirm Deletion</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete this plan?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    const editPlanModal = document.getElementById('editPlanModal');
+    editPlanModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const id = button.getAttribute('data-id');
+        const name = button.getAttribute('data-name');
+        const price = button.getAttribute('data-price');
+        const duration = button.getAttribute('data-duration');
+        const description = button.getAttribute('data-description');
+        const maxbook = button.getAttribute('data-maxbook');
+        const maxduration = button.getAttribute('data-maxduration');
+        
+        document.getElementById('editPlanId').value = id;
+        document.getElementById('editPlanName').value = name;
+        document.getElementById('editPlanPrice').value = price;
+        document.getElementById('editPlanDuration').value = duration;
+        document.getElementById('editPlanDescription').value = description;
+        document.getElementById('editPlanMaxbook').value = maxbook;
+        document.getElementById('editPlanMaxduration').value = maxduration;
+    });
+
+    document.getElementById('editPlanForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const form = document.getElementById('editPlanForm');
+        const formData = new FormData(form);
+
+        try {
+            const planId = document.getElementById('editPlanId').value;
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            const url = `/plan/edit/${planId}/`;
+            console.log('Submitting to URL:', url);
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                },
+                body: formData,
+            });
+
+            const responseData = await response.json();
+            console.log('Server response:', response.status, responseData);
+
+            if (response.ok) {
+                const modal = bootstrap.Modal.getInstance(editPlanModal);
+                modal.hide();
+                window.location.href = "{% url 'view_subscriptionplan' %}";
+            } else {
+                alert('Failed to update the plan. Error: ' + responseData.error);
+            }
+        } catch (error) {
+            console.error('Error updating the plan:', error);
+        }
+    });
+});
+
+
+
+    </script>
+    <script>
+        // Function to trigger the confirmation modal and store the plan ID
+        document.querySelectorAll('.delete-btn').forEach(button => {
+  button.addEventListener('click', function() {
+    const planId = this.getAttribute('data-plan-id');
+    console.log('Delete button clicked for plan ID:', planId);  // Debugging line
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    
+    confirmDeleteBtn.setAttribute('data-plan-id', planId);
+    $('#deletePlanModal').modal('show');
+  });
+});
+
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+  const planId = this.getAttribute('data-plan-id');
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  
+  try {
+    const response = await fetch(`/plan/delete/${planId}/`, {
+      method: 'POST',
+      headers: {
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken 
+  },
+    });
+
+    console.log('Response:', response);  // Check the response object
+
+    const data = await response.json();
+    console.log('Response Data:', data);  // Check if we get success/failure
+
+    if (data.success) {
+      $('#deletePlanModal').modal('hide');
+      window.location.reload();
+    } else {
+      alert('Failed to delete the plan. Please try again.');
+    }
+  } catch (error) {
+    console.error('Error deleting the plan:', error);
+    alert('An error occurred while deleting the plan.');
+  }
+});
+
+editPlanModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+    const planId = button.getAttribute('data-id');
+    const genres = JSON.parse(button.getAttribute('data-genres'));
+
+    document.getElementById('editPlanId').value = planId;
+
+    const checkboxes = document.querySelectorAll('#editPlanGenres .form-check-input');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = genres.includes(parseInt(checkbox.value));
+    });
+});
+
+
+      </script>
+      
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+</body>
+
+</html>

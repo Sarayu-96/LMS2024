@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: #2c3e50;
+        }
+
+        a {
+            text-decoration: none;
+            color: #3498db;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #1abc9c;
+        }
+
+        /* Add New Author Button */
+        .add-author-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .add-author-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-author-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Table Styles */
+        table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 20px; /* Makes the table's corners rounded */
+    overflow: hidden; /* Ensures the contents respect the rounded corners */
+}
+
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Profile Image */
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-buttons a {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 5px;
+            color: white;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .edit-btn {
+            background-color: #f39c12;
+        }
+
+        .edit-btn:hover {
+            background-color: #e67e22;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* General styles for search box container */
+.search-box-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+/* Input group styling */
+.input-group {
+    display: flex;
+    align-items: center;
+    max-width: 900px;
+    width: 750px;
+    position: relative;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50px; /* Makes the search bar oval */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Search input field styling */
+.form-control {
+    padding: 18px 243px;
+    border: none;
+    border-radius: 50px 0 0 50px;
+    flex: 1;
+    font-size: 20px;
+    outline: none;
+    box-shadow: none;
+    margin-left: -160px;
+}
+
+
+/* Clear button styling */
+.clear-btn {
+    position: absolute;
+    right: 25px;
+    font-size: 47px;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.clear-btn:hover {
+    color: #3498db;
+}
+
+/* Search button styling */
+.btn-primary {
+    padding: 12px 25px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 0 50px 50px 0; /* Matches the container's border-radius */
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 0; /* Removes default margin */
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .input-group {
+        max-width: 90%;
+    }
+}
+.add-author-floating-btn {
+    position: fixed;
+    bottom: 349px;
+    left: 0px;
+    padding: 13px 38px;
+    background-color: #3267c3;
+    color: white;
+    font-size: 28px;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 21px rgba(0, 0, 0, 7.3);
+    cursor: pointer;
+    transition: background-color 1.3s ease;
+}
+
+.add-author-floating-btn:hover {
+    background-color: #dd5e09;
+    color: white;
+}
+.pagination-container {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .pagination {
+        list-style: none;
+        padding: 0;
+        display: inline-flex;
+        gap: 5px;
+    }
+
+    .pagination li {
+        display: inline;
+    }
+
+    .pagination li a,
+    .pagination li span {
+        display: inline-block;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #3498db;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .pagination li a:hover {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .pagination li.active span {
+        background-color: #3498db;
+        color: white;
+        font-weight: bold;
+    }
+
+    .pagination li.disabled span {
+        color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .pagination li.disabled {
+        pointer-events: none;
+    }
+
+    .action-buttons {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    justify-content: start; /* Align buttons properly */
+}
+
+.action-buttons .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px; /* Spacing between icon and text */
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Edit Button */
+.edit-btn {
+    background-color: #ffc107; /* Yellow color for edit */
+    border: 1px solid #e0a800;
+}
+
+.edit-btn:hover {
+    background-color: #e0a800; /* Darker yellow on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Delete Button */
+.delete-btn {
+    background-color: #dc3545; /* Red color for delete */
+    border: 1px solid #b02a37;
+}
+
+.delete-btn:hover {
+    background-color: #b02a37; /* Darker red on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Icons Styling */
+.action-buttons i {
+    font-size: 16px; /* Adjust icon size */
+    vertical-align: middle;
+}
+    </style>
+
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- <h2 class="text-center mb-4">Book List</h2> -->
+
+        <!-- Add New Author Button -->
+    <div class="add-author-container">
+        <a href="{% url 'add_book' %}" class="add-author-floating-btn">+ Add Book</a>
+    </div>
+
+    <div class="search-box-container">
+        <form method="GET" class="mb-4" id="search-form">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search by Title, Author, Genre ..." value="{{ search_query }}">
+                <!-- Clear Button inside the input field -->
+                <span class="clear-btn" onclick="clearSearch()">×</span>
+                
+            </div>
+            
+        </form>
+    </div>
+
+        <!-- Book List Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Published Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in page_obj %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.genre }}</td>
+                    <td>{{ book.published_date }}</td>
+                    <td>
+                        <!-- Edit Button -->
+                        <a href="{% url 'edit_book' book.id %}" class="btn btn-warning btn-sm me-2">
+                            <i class="bi bi-pencil-fill"></i> Edit
+                        </a>
+                        <!-- Delete Button -->
+                        <form action="{% url 'delete_book' book.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash-fill"></i> Delete
+                            </button>
+                        </form>
+                    </td>
+                    
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">No books found.</td>
+                </tr>
+                {% endfor %}
+                
+            </tbody>
+        </table>
+        <div class="pagination-container">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li><a href="?q={{ search_query }}&page=1">&laquo; First</a></li>
+                    <li><a href="?q={{ search_query }}&page={{ page_obj.previous_page_number }}">&#8249; Previous</a></li>
+                {% else %}
+                    <li class="disabled"><span>&laquo; First</span></li>
+                    <li class="disabled"><span>&#8249; Previous</span></li>
+                {% endif %}
+        
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                        <li class="active"><span>{{ num }}</span></li>
+                    {% else %}
+                        <li><a href="?q={{ search_query }}&page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+        
+                {% if page_obj.has_next %}
+                    <li><a href="?q={{ search_query }}&page={{ page_obj.next_page_number }}">Next &#8250;</a></li>
+                    <li><a href="?q={{ search_query }}&page={{ page_obj.paginator.num_pages }}">Last &raquo;</a></li>
+                {% else %}
+                    <li class="disabled"><span>Next &#8250;</span></li>
+                    <li class="disabled"><span>Last &raquo;</span></li>
+                {% endif %}
+            </ul>
+        </div>
+        
+    </div>
+    <script>
+        // Function to clear the search input field and submit the form
+        function clearSearch() {
+            const searchInput = document.querySelector('input[name="q"]');
+            const searchForm = document.getElementById('search-form');
+            searchInput.value = ''; // Clear the input field
+            searchForm.submit(); // Submit the form to refresh results
+        }
+    </script>
+</body>
+</html>

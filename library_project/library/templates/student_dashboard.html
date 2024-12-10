@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book List</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        /* Larger Navbar Styles */
+        .navbar {
+            background-color: #a15f07;
+            /* Blue color */
+            padding: 20px 0;
+            /* Increased padding for a bigger navbar */
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            /* Ensures the navbar stays on top of other elements */
+        }
+
+        .navbar a {
+            color: white !important;
+            font-size: 1.1rem;
+            /* Slightly larger font for better readability */
+        }
+
+        .navbar .navbar-brand {
+            font-size: 1.8rem;
+            /* Make the brand name larger */
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            /* Make the brand name larger */
+            font-family: Arial, Helvetica, sans-serif;
+            margin-left: 10px;
+
+        }
+
+        /* Banner Styles */
+        .banner {
+            background: #34d399;
+            /* Green Banner */
+            color: white;
+            text-align: center;
+            padding: 200px 20px;
+            /* Increased padding for a bigger banner */
+            font-size: 2rem;
+            /* Larger font size */
+            font-weight: bold;
+            margin-top: 30px;
+            /* Increased margin to make the banner stand out more */
+        }
+
+        .banner .offer {
+            font-size: 1.5rem;
+            /* Larger offer text */
+            color: #ffffff;
+            margin-top: 10px;
+        }
+
+        /* Book Grid Styles */
+        .book-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 20px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .book-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .book-author {
+            color: #555;
+        }
+
+        .book-price {
+            font-size: 1.1rem;
+            color: #28a745;
+            margin-top: 10px;
+        }
+
+        /* Search Bar Styles */
+        .search-bar {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-bar input {
+            width: 200%;
+            padding: 13px;
+            border: 4px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-left: 300px;
+        }
+
+        .search-bar .clear {
+            position: absolute;
+            right: -550px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #aaa;
+            font-size: 2rem;
+
+        }
+
+        /* Contact Info Section */
+        .contact-info {
+            background-color: #f8f9fa;
+            /* Light background color */
+            padding: 1px 0px;
+            text-align: center;
+            font-size: 16px;
+            border-top: 1px solid #ddd;
+        }
+
+        /* Flexbox for Contact Info */
+        .contact-info .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contact-info .contact-text {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .contact-info .details {
+            text-align: right;
+        }
+
+        .contact-info .details a {
+            color: #007bff;
+            /* Blue links */
+            text-decoration: none;
+        }
+
+        .contact-info .details a:hover {
+            text-decoration: underline;
+        }
+
+        /* Page Content */
+        .content {
+            padding: 60px 20px;
+            /* Padding to create space below the navbar */
+            height: 2000px;
+            /* Example content height to allow scrolling */
+        }
+
+        .view-details-btn {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007bff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        .view-details-btn:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-nav {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+            }
+
+            .input-group {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: auto;
+            position: relative;
+        }
+
+        footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+        #username:hover {
+            color: rgb(176, 11, 190); /* Change text color on hover */
+            text-decoration: underline; /* Add underline on hover */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <div class="sticky-top">
+
+
+                <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+                    <div class="container-fluid">
+                        <!-- Brand -->
+                        <a class="navbar-brand fw-bold" href="#">
+                            <img src="/media/download(4).jpeg" alt="Logo" class="me-2"
+                                style="border-radius: 50%; width: 60px; height: 60px;" />
+                            ReadIt
+                        </a>
+
+                        <!-- Toggler -->
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <!-- Collapsible Content -->
+                        <div class="collapse navbar-collapse j  ustify-content-between" id="navbarNav">
+                            <!-- Left Section -->
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a 
+                                        class="nav-link" 
+                                        href="#" id="username"
+                                        style="font-size: 20px; font-weight: bold; color: #14aedd !important; text-transform: capitalize; transition: color 0.3s ease; text-decoration: none !important;">
+                                        {{user.username}}
+                                    </a>
+                                </li>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-sm btn-outline-warning px-3 mx-2"
+                                        href="{% url 'student_dashboard' %}">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-sm btn-outline-warning px-3 mx-2" href="#">Profile</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="#">Plan</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="#">Purchases</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="#">Rentals</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-warning px-3" href="#">
+                                        <i class="fas fa-shopping-cart"></i> <!-- Font Awesome icon for cart -->
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-warning px-3" href="#">
+                                        <i class="fas fa-heart"></i> <!-- Font Awesome icon for wishlist -->
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-warning px-3" href="#">
+                                        <i class="fas fa-bell"></i> <!-- Font Awesome icon for wishlist -->
+                                    </a>
+                                </li>
+                            </ul>
+
+
+
+                            <!-- Right Section: Search Bar -->
+                            <div class="input-group shadow-lg" style="max-width: 600px; width: 100%;">
+                                <input type="text" id="searchInput"
+                                    class="form-control form-control-lg rounded-start-pill border-0 px-4"
+                                    placeholder="Search books, authors, or genres..." oninput="handleSearch()"
+                                    style="font-size: 1.2rem;" />
+                                <button class="btn btn-warning rounded-end-pill px-4 text-white" onclick="clearSearch()"
+                                    style="font-size: 1.2rem; font-weight: bold;">
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Contact Info -->
+                <div class="contact-info">
+                    <div class="container">
+                        <div class="details">
+                            <p>
+                                Toll-Free: <a href="tel:+18001234567">1-800-123-4567</a> |
+                                Email: <a href="mailto:support@library.com">support@library.com</a> |
+                                Address: 123 Library St, City, Country
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book Collection -->
+            <div class="container my-5">
+                <h1 class="text-center mb-5">Best Sellers</h1>
+
+                <div class="row">
+                    {% for book in books %}
+                    <div class="col-md-3 col-sm-6">
+                        <div class="book-card">
+                            <img src="{{ book.image.url }}" alt="{{ book.title }}" class="img-fluid">
+                            <div class="book-title">{{ book.title }}</div>
+                            <div class="book-author">{{ book.author }}</div>
+                            <div class="book-price">₹{{ book.price }}</div><br>
+                            <div><a href="{% url 'view_book_details' book.id %}" class="view-details-btn">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>No books available.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <footer class="sticky-bottom">
+                <p>&copy; 2024 ReadIt. All rights reserved. <a href="/privacy">Privacy Policy</a></p>
+            </footer>
+
+            <!-- Bootstrap Bundle JS -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+            <script>
+                // JavaScript for search functionality
+                function handleSearch() {
+                    var input = document.getElementById("searchInput").value;
+                    if (input) {
+                        window.location.href = "/search/?query=" + input;  // Redirect to search page with query
+                    }
+                }
+
+                function clearSearch() {
+                    document.getElementById("searchInput").value = '';
+                    window.location.href = "/search";  // Reset to search page without query
+                }
+            </script>
+</body>
+
+</html>

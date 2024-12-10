@@ -1,0 +1,616 @@
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Authors</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: #2c3e50;
+        }
+
+        a {
+            text-decoration: none;
+            color: #3498db;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #1abc9c;
+        }
+
+        /* Add New Author Button */
+        .add-author-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .add-author-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-author-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Table Styles */
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 20px;
+            /* Makes the table's corners rounded */
+            overflow: hidden;
+            /* Ensures the contents respect the rounded corners */
+        }
+
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Profile Image */
+        img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-buttons a {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 5px;
+            color: white;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .edit-btn {
+            background-color: #f39c12;
+        }
+
+        .edit-btn:hover {
+            background-color: #e67e22;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* General styles for search box container */
+        .search-box-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        /* Input group styling */
+        .input-group {
+            display: flex;
+            align-items: center;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            /* Makes the search bar oval */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* Search input field styling */
+        .form-control {
+            padding: 14px 185px;
+            border: none;
+            border-radius: 50px 0 0 50px;
+            flex: 1;
+            font-size: 21px;
+            outline: none;
+            box-shadow: none;
+        }
+
+
+        /* Clear button styling */
+        .clear-btn {
+            position: absolute;
+            right: 25px;
+            font-size: 47px;
+            color: #aaa;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .clear-btn:hover {
+            color: #3498db;
+        }
+
+        /* Search button styling */
+        .btn-primary {
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0 50px 50px 0;
+            /* Matches the container's border-radius */
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 0;
+            /* Removes default margin */
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .input-group {
+                max-width: 90%;
+            }
+        }
+
+        .add-author-floating-btn {
+            position: fixed;
+            bottom: 349px;
+            left: 0px;
+            padding: 13px 38px;
+            background-color: #3267c3;
+            color: white;
+            font-size: 28px;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 21px rgba(0, 0, 0, 7.3);
+            cursor: pointer;
+            transition: background-color 1.3s ease;
+        }
+
+        .add-author-floating-btn:hover {
+            background-color: #cf5e13;
+        }
+
+        .pagination-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .pagination {
+            list-style: none;
+            padding: 0;
+            display: inline-flex;
+            gap: 5px;
+        }
+
+        .pagination li {
+            display: inline;
+        }
+
+        .pagination li a,
+        .pagination li span {
+            display: inline-block;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #3498db;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .pagination li a:hover {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .pagination li.active span {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        .pagination li.disabled span {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .pagination li.disabled {
+            pointer-events: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            /* Space between buttons */
+            justify-content: start;
+            /* Align buttons properly */
+        }
+
+        .action-buttons .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            /* Spacing between icon and text */
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        /* Edit Button */
+        .edit-btn {
+            background-color: #ffc107;
+            /* Yellow color for edit */
+            border: 1px solid #e0a800;
+        }
+
+        .edit-btn:hover {
+            background-color: #e0a800;
+            /* Darker yellow on hover */
+            transform: scale(1.05);
+            /* Slight zoom effect */
+        }
+
+        /* Delete Button */
+        .delete-btn {
+            background-color: #dc3545;
+            /* Red color for delete */
+            border: 1px solid #b02a37;
+        }
+
+        .delete-btn:hover {
+            background-color: #b02a37;
+            /* Darker red on hover */
+            transform: scale(1.05);
+            /* Slight zoom effect */
+        }
+
+        /* Icons Styling */
+        .action-buttons i {
+            font-size: 16px;
+            /* Adjust icon size */
+            vertical-align: middle;
+        }
+/* Modal Styling */
+.modal-content {
+        border-radius: 16px; /* Rounded corners for a sleek look */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .modal-header {
+        background-color: #13855f; /* Blue background */
+        color: white;
+        font-weight: 600;
+        padding: 20px 30px;
+        border-bottom: 2px solid #0056b3;
+    }
+
+    .modal-body {
+        font-size: 1.1rem; /* Slightly larger font for better readability */
+    }
+
+    .form-label {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #495057;
+    }
+    .search {
+        padding: 18px 243px;
+    border: none;
+    border-radius: 50px 0 0 50px;
+    flex: 1;
+    font-size: 20px;
+    outline: none;
+    box-shadow: none;
+    margin-left: -160px;
+}
+    
+
+    .form-control {
+        border-radius: 15px;
+    box-shadow: inset 0 6px 416px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    font-size: 1rem;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .form-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .btn-success {
+        background-color: #21aa55;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        padding: 12px 20px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-success:hover {
+        background-color: #b4290681;
+    }
+
+    .modal-dialog.modal-lg {
+        max-width: 800px; /* Larger modal size */
+    }
+
+    /* Responsive Design for Larger Forms */
+    @media (max-width: 768px) {
+        .modal-dialog.modal-lg {
+            max-width: 100%;
+        }
+
+        .form-control {
+            font-size: 0.95rem;
+        }
+
+        .modal-body {
+            padding: 15px;
+        }
+    }
+
+    </style>
+</head>
+
+<body>
+    <!-- <h1>Authors</h1> -->
+
+    <!-- Add New Author Button -->
+    <div class="add-author-container">
+        <button type="button" class="add-author-floating-btn" data-bs-toggle="modal" data-bs-target="#addAuthorModal">+
+            Add Author</button>
+    </div>
+
+
+    <!-- Search Box -->
+    <div class="search-box-container">
+        <form method="GET" class="mb-4" id="search-form">
+            <div class="input-group">
+                <input type="text" name="q" class="search" placeholder="Search by Name ..."
+                    value="{{ search_query }}">
+                <!-- Clear Button inside the input field -->
+                <span class="clear-btn" onclick="clearSearch()">×</span>
+
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Authors Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Profile Image</th>
+                <th>Name</th>
+                <th>Bio</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for author in page_obj %}
+            <tr>
+                <td>
+                    {% if author.profile_image %}
+                    <img src="{{ author.profile_image.url }}" alt="{{ author.name }}">
+                    {% else %}
+                    <p>No Image</p>
+                    {% endif %}
+                </td>
+                <td>{{ author.name }}</td>
+                <td>{{ author.bio }}</td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'update_author' author.id %}" class="edit-btn"><i class="bi bi-pencil-fill"></i></a>
+                        <a href="{% url 'delete_author' author.id %}" class="delete-btn"
+                            onclick="return confirm('Are you sure you want to delete this author?');"> <i
+                            class="bi bi-trash-fill"></i></a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No authors found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="pagination-container">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li><a href="?q={{ search_query }}&page=1">&laquo; First</a></li>
+            <li><a href="?q={{ search_query }}&page={{ page_obj.previous_page_number }}">&#8249; Previous</a></li>
+            {% else %}
+            <li class="disabled"><span>&laquo; First</span></li>
+            <li class="disabled"><span>&#8249; Previous</span></li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+            {% if num == page_obj.number %}
+            <li class="active"><span>{{ num }}</span></li>
+            {% else %}
+            <li><a href="?q={{ search_query }}&page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li><a href="?q={{ search_query }}&page={{ page_obj.next_page_number }}">Next &#8250;</a></li>
+            <li><a href="?q={{ search_query }}&page={{ page_obj.paginator.num_pages }}">Last &raquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>Next &#8250;</span></li>
+            <li class="disabled"><span>Last &raquo;</span></li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="modal fade" id="addAuthorModal" tabindex="-1" aria-labelledby="addAuthorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addAuthorModalLabel">Add Author</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addAuthorForm" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Author Name -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label for="id_name" class="form-label">Author Name</label>
+                                {{ form.name|add_class:"form-control" }}
+                                <!-- <div class="form-text">Enter the full name of the author. It will be used for display purposes.</div> -->
+                            </div>
+                        </div>
+    
+                        <!-- Author Bio -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label for="id_bio" class="form-label">Biography</label>
+                                {{ form.bio|add_class:"form-control" }}
+                                <!-- <div class="form-text">Provide a detailed biography of the author (optional but recommended).</div> -->
+                            </div>
+                        </div>
+    
+                        <!-- Profile Image Upload -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label for="id_profile_image" class="form-label">Profile Image</label>
+                                {{ form.profile_image|add_class:"form-control" }}
+                                <!-- <div class="form-text">Upload a high-quality profile image of the author (optional).</div> -->
+                            </div>
+                        </div>
+    
+                        <!-- Submit Button -->
+                        <div class="row mb-3">
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-success">Save Author</button>
+                            </div>
+                        </div>
+    
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        // Function to clear the search input field and submit the form
+        function clearSearch() {
+            const searchInput = document.querySelector('input[name="q"]');
+            const searchForm = document.getElementById('search-form');
+            searchInput.value = ''; // Clear the input field
+            searchForm.submit(); // Submit the form to refresh results
+        }
+    </script>
+    <script>
+        document.getElementById('addAuthorForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get the form data
+            let formData = new FormData(this);
+
+            // Send an AJAX request
+            fetch("{% url 'add_author' %}", {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Close the modal
+                        var myModal = new bootstrap.Modal(document.getElementById('addAuthorModal'));
+                        myModal.hide();
+
+                        //Update the authors list dynamically in the modal
+                    //    document.getElementById('authors-list').innerHTML = data.authors_html;
+                    window.location.href = "{% url 'view_authors' %}";  // Change 'view_authors' to the actual URL name
+                
+                    } else {
+                        // Handle validation errors
+                        alert('Error: ' + JSON.stringify(data.error));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+
+</body>
+
+</html>
