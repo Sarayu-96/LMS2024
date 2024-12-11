@@ -32,3 +32,6 @@ urlpatterns = [
     path('membership-plans/', views.view_membership_plans, name='membership_plans'),
 
 ]
+
+
+

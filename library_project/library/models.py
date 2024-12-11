@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 # vfcxbdcb
 
 class Author(models.Model):
@@ -8,7 +9,7 @@ class Author(models.Model):
 
     def __str__(self):
         return self.name
-<<<<<<< HEAD
+
 
 
 class Genre(models.Model):
@@ -44,9 +45,6 @@ class Plan(models.Model):
      duration_months = models.PositiveIntegerField()  # Duration in months
      created_at = models.DateTimeField(auto_now_add=True)  # Date when the plan was created
      updated_at = models.DateTimeField(auto_now=True)  # Date when the plan was last updated
-=======
->>>>>>> 61ea846b5444e3be271f9bf6900bae5e29274174
-
 
 class Genre(models.Model):
     name = models.CharField(max_length=100)
@@ -95,7 +93,6 @@ class Plancategory(models.Model):
 
     def __str__(self):
         return f"{self.plan.name}"
-
 
 
 
