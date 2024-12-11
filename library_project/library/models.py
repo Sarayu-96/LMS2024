@@ -1,6 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
-# vfcxbdcb
+
+
+from datetime import timedelta
+from django.utils.timezone import now # Import timezone for date-time operations
+
+
 
 class Author(models.Model):
     name = models.CharField(max_length=255)
@@ -93,6 +98,70 @@ class Plancategory(models.Model):
 
     def __str__(self):
         return f"{self.plan.name}"
+
+class Subscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscriptions')
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name='subscriptions')
+    start_date = models.DateTimeField(auto_now_add=True)  # Subscription start date
+    end_date = models.DateTimeField()  # Subscription end date
+    status = models.CharField(
+        max_length=20,
+        default='active'  # Default value is 'active'
+    )
+    
+
+    def save(self, *args, **kwargs):
+        if not self.start_date:
+            self.start_date = now()
+        # Automatically set the end_date based on the plan's duration when creating a subscription
+        if not self.end_date:
+            self.end_date = self.start_date + timedelta(days=self.plan.duration_days)
+        super().save(*args, **kwargs)
+
+    def is_active(self):
+    # Check if the subscription is still active
+        return self.status == 'active' and self.end_date > now()
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.plan.name}"
+    
+
+class Rental(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rentals')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='rentals')
+    rental_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField()
+    status = models.CharField(max_length=20, default='active')
+
+    def save(self, *args, **kwargs):
+        # Get the user's current subscription
+        subscription = Subscription.objects.filter(user=self.user, status='active').first()
+
+        if not subscription:
+            raise ValueError("User does not have an active subscription.")
+
+        # Set the return_date based on the subscription's plan's max_rent_duration
+        if not self.return_date:
+            self.end_date = self.rental_date + timedelta(days=subscription.plan.max_rent_duration)
+
+        super().save(*args, **kwargs)
+
+    def is_active(self):
+        return self.status == 'active' and self.end_date > now()
+
+    def __str__(self):
+        return f"Rental: {self.user.username} - {self.book.title}"
+    
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)  # Track if the notification has been read
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Notification for {self.user.username}"
+
 
 
 

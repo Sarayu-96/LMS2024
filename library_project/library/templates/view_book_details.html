@@ -283,6 +283,30 @@
 .wishlist-icon.filled {
     color: #ff3366; /* Red color when filled */
 }
+.btn-logout {
+    background-color: #f44336; /* Red color for the logout button */
+    color: white;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-logout i {
+    font-size: 1.2rem; /* Size of the logout icon */
+}
+
+.btn-logout:hover {
+    background-color: #d32f2f; /* Darker red when hovered */
+}
+
+.btn-logout:focus {
+    outline: none;
+}
     </style>
 </head>
 
@@ -368,6 +392,10 @@
                                     Search
                                 </button>
                             </div>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="{%url 'view_books'%}" class="btn-logout">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </a>
                         </div>
                     </div>
                 </nav>

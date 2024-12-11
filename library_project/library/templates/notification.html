@@ -1,17 +1,6 @@
-<!-- notifications.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Notifications</title>
-</head>
-<body>
-    <h1>Your Notifications</h1>
-    <ul>
-        {% for notification in notifications %}
-            <li>{{ notification.message }}</li>
-        {% empty %}
-            <li>No notifications</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% for notification in notifications %}
+    <div>
+        <p>{{ notification.message }}</p>
+        <small>{{ notification.created_at }}</small>
+    </div>
+{% endfor %}

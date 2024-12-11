@@ -1,14 +1,16 @@
+from datetime import timedelta
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import AuthorForm, BookForm, CategoryForm,PlanForm, PlanCategoryForm
-from .models import Author, Genre, Book, Plan, Plancategory, Membership, Notification
+from .forms import AddCategoryForm, AuthorForm, BookForm, AddCategoryForm, EditCategoryForm,PlanForm, PlanCategoryForm
+from .models import Author, Genre, Book, Notification, Plan, Plancategory, Subscription
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-from datetime import datetime, timedelta
+from django.utils.timezone import now
+
 
 
 
@@ -34,7 +36,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('view_books')
 
 
 @login_required
@@ -58,6 +60,14 @@ def register_view(request):
         else:
             return render(request, 'register.html', {'error': 'Passwords do not match'})
     return render(request, 'register.html')
+
+def subscription_plan_view(request):
+    is_authenticated = request.user.is_authenticated
+    if not request.user.is_authenticated:
+        return redirect('register')  # Redirect to the registration page if not logged in
+    
+    # Your subscription plan logic here
+    return render(request, 'membership_plans.html', {'is_authenticated': is_authenticated})
 
 def add_book(request):
     authors = Author.objects.all()  # Fetch all authors from the database
@@ -136,7 +146,7 @@ def list_books(request):
     )
 def view_books(request):
     books = Book.objects.all()
-    return render(request, 'home_page.html', {'books': books})
+    return render(request, 'home_page.html', {'books': books, 'user': request.user})
 
 def view_book_details(request,book_id):
     # print(book_id)
@@ -217,9 +227,11 @@ def book_search(request):
     books = Book.objects.filter(title__icontains=query) if query else Book.objects.all()
     return render(request, 'book_list.html', {'books': books})
 
-def view_membership_plans(request):
-    plans = Plan.objects.all()  # Fetch all membership plans from the database
-    return render(request, 'membership_plans.html', {'plans': plans})
+
+    
+
+    
+    return render(request, 'membership_plans.html', {'plans': plans, 'user': request.user})
 
 
     if search_query:
@@ -288,43 +300,18 @@ def delete_author(request, author_id):
 
 
 def view_categories(request):
-    categories = Genre.objects.all()
-    return render(request, 'view_categories.html', {'categories': categories})
+    categories = Genre.objects.all()  # Fetch all categories
+    plans_by_category = {}
 
-# Add a new category
-def add_category(request):
-    # plan=Plan.objects.all()
-    if request.method == 'POST':
-        form = CategoryForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('view_categories')
-    else:
-        form = CategoryForm()
-    return render(request, 'add_category.html', {'form': form})
+    # Fetch the plans associated with each category (Genre)
+    for category in categories:
+        # Using the Plancategory relationship to fetch associated plans for each genre
+        plans = Plan.objects.filter(plans__genre=category)  # Filter plans by genre (category)
+        plans_by_category[category.id] = plans
 
-# Update an existing category
-def edit_category(request, category_id):
-    category = get_object_or_404(Genre, id=category_id)  # Fetch category
-    related_plans = Plancategory.objects.filter(genre=category)
+    return render(request, 'view_categories.html', {'categories': categories, 'plans_by_category': plans_by_category})
 
-    if request.method == 'POST':
-        form = PlanCategoryForm(request.POST)
-        if form.is_valid():
-            category.name = form.cleaned_data['name']
-            category.save()
-            Plancategory.objects.filter(genre=category).delete()
-            plans = form.cleaned_data['plans']
-            for plan in plans:
-                Plancategory.objects.create(plan=plan, genre=category)
-            return redirect('view_categories')
-    else:
-        form = PlanCategoryForm(initial={
-            'name': category.name,  # Pre-fill name
-            'plans': related_plans.values_list('plan', flat=True),  # Pre-select plans
-        })
 
-    return render(request, 'update_category.html', {'form': form, 'category': category})
 
 # Delete a category
 def delete_category(request, genre_id):
@@ -422,40 +409,30 @@ def delete_plan(request, plan_id):
     
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=400)
 
+
 def add_category(request):
     if request.method == 'POST':
-        category_form = CategoryForm(request.POST)
-        plan_category_form = PlanCategoryForm(request.POST)
-
-        if category_form.is_valid() and plan_category_form.is_valid():
-            # Save the category (genre)
-            genre = category_form.save()
-
-            # Get selected plans from the form
-            selected_plans = plan_category_form.cleaned_data['plans']
-
-            # Create PlanCategory for each selected plan
-            for plan in selected_plans:
-                Plancategory.objects.create(plan=plan, genre=genre)
-
-            return redirect('view_categories')  # Redirect to a success page
-
+        form = AddCategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('view_categories')
     else:
-        category_form = CategoryForm()
-        plan_category_form = PlanCategoryForm()
+        form = AddCategoryForm()
+    return render(request, 'add_category.html', {'form': form})
 
-    return render(request, 'add_category.html', {
-        'category_form': category_form,
-        'plan_category_form': plan_category_form
-    })
-    
-    # else:
-    #     # Pre-fill the form with existing plan data
-    #     form = PlanForm(instance=plan)
 
-    # # Return the form in the modal to populate the edit fields
-    # return render(request, 'edit_plan_modal.html', {'form': form})
-
+def edit_category(request,genre_id):
+    genre = get_object_or_404(Genre, id=genre_id)
+    if request.method == 'POST':
+        form = EditCategoryForm(request.POST or None,request.FILES or None, instance=genre) 
+        if form.is_valid():
+            form.save()
+            return redirect('view_categories')
+        else:
+            print(form.errors)
+    else:
+        form = EditCategoryForm(instance=genre)
+    return render(request, 'edit_category.html', {'form': form})
 
 
 
@@ -475,5 +452,55 @@ def add_category(request):
 #     })
 
 
+def notifications_view(request):
+    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'notification.html', {'notification': notifications})
+
+def subscription_expiry_notifications(request):
+    """Notify users whose subscriptions are about to expire."""
+    user = request.user
+    subscriptions = Subscription.objects.filter(user=user, end_date__lte=now() + timedelta(days=7))
+    
+    notifications = [
+        {
+            "message": f"Your subscription for {sub.plan.name} is about to expire on {sub.end_date}.",
+            "expiry_date": sub.end_date
+        }
+        for sub in subscriptions
+    ]
+
+    return JsonResponse({"notifications": notifications})
 
 
+def new_book_notifications(request):
+    """Notify users about new book releases."""
+    recent_books = Book.objects.filter(created_at__gte=now() - timedelta(days=30))  # Books added in the last 30 days
+    
+    notifications = [
+        {
+            "title": book.title,
+            "author": book.author.name,
+            "release_date": book.created_at,
+            "description": book.description
+        }
+        for book in recent_books
+    ]
+
+    return JsonResponse({"notifications": notifications})
+
+
+def all_notifications(request):
+    """Aggregate all types of notifications."""
+    subscription_notifications = subscription_expiry_notifications(request).content
+    book_notifications = new_book_notifications(request).content
+
+    return JsonResponse({
+        "subscription_notifications": subscription_notifications,
+        "book_notifications": book_notifications,
+    })
+
+def subscribe_plan(request, id):
+    pass
+
+def view_membership_plans(request):
+    pass

@@ -1,3 +1,5 @@
+{% load custom_filters %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -155,6 +157,7 @@
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Access Plans</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -162,6 +165,17 @@
             {% for category in categories %}
             <tr>
                 <td>{{ category.name }}</td>
+                <td>
+                    {% if plans_by_category|get_item:category.id %}
+                        <ul>
+                            {% for plan in plans_by_category|get_item:category.id %}
+                            <li>{{ plan.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <small>No plans available</small>
+                    {% endif %}
+                </td>
                 <td>
                     <div class="action-buttons">
                         <a href="{% url 'update_category' category.id %}" class="edit-btn">Edit</a>
