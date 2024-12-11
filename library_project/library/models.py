@@ -162,7 +162,16 @@ class Notification(models.Model):
     def __str__(self):
         return f"Notification for {self.user.username}"
 
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reviews')
+    rating = models.PositiveIntegerField(default=1, choices=[(i, i) for i in range(1, 6)])  # Rating between 1 to 5
+    review_text = models.TextField(blank=True, null=True)  # Optional review text
+    created_at = models.DateTimeField(auto_now_add=True)  # Timestamp for review creation
+    updated_at = models.DateTimeField(auto_now=True)  # Timestamp for review update
 
+    def __str__(self):
+        return f"{self.user.username} - {self.book.title} - {self.rating}"
 
 
 

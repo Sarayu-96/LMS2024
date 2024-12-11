@@ -35,7 +35,8 @@ urlpatterns = [
     path('subscribe/<int:plan_id>/', views.subscribe_plan, name='subscribe_plan'),
     path('notifications/subscription-expiry/', views.subscription_expiry_notifications, name='subscription_expiry_notifications'),
     path('notifications/new-releases/', views.new_book_notifications, name='new_book_notifications'),
-    path('notifications/', views.notifications_view, name='all_notifications'),
+    path('notifications/', views.notifications_view, name='all_notifications'),     
+    
    
 
 ]

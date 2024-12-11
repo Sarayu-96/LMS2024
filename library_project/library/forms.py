@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User  # Built-in User model
-from .models import Author, Book, Genre, Plan, Plancategory # Other model imports
+from .models import Author, Book, Genre, Plan, Plancategory, Review # Other model imports
 from django.forms import modelformset_factory
 
 # Create a formset for PlanCategory
@@ -132,7 +132,14 @@ class EditCategoryForm(forms.ModelForm):
         return genre
 
 
-
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'review_text']  # Include only rating and review text
+        widgets = {
+            'rating': forms.Select(attrs={'class': 'form-control'}),
+            'review_text': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
 
 
 

@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import AddCategoryForm, AuthorForm, BookForm, AddCategoryForm, EditCategoryForm,PlanForm, PlanCategoryForm
+from .forms import AddCategoryForm, AuthorForm, BookForm, AddCategoryForm, EditCategoryForm,PlanForm, PlanCategoryForm, ReviewForm
 from .models import Author, Genre, Book, Notification, Plan, Plancategory, Subscription
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -504,3 +504,24 @@ def subscribe_plan(request, id):
 
 def view_membership_plans(request):
     pass
+
+
+@login_required
+def add_review(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            review.book = book
+            review.save()
+            return redirect('book_detail', book_id=book.id)  # Redirect to book detail page
+    else:
+        form = ReviewForm()
+    return render(request, 'add_review.html', {'form': form, 'book': book})
+
+def book_reviews(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    reviews = book.reviews.all()  # Fetch all reviews for this book
+    return render(request, 'reviews/book_reviews.html', {'book': book, 'reviews': reviews})
