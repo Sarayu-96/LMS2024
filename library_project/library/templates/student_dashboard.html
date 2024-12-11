@@ -221,6 +221,31 @@
             color: rgb(176, 11, 190); /* Change text color on hover */
             text-decoration: underline; /* Add underline on hover */
         }
+        /* Styling the Logout Button */
+.btn-logout {
+    background-color: #f44336; /* Red color for the logout button */
+    color: white;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-logout i {
+    font-size: 1.2rem; /* Size of the logout icon */
+}
+
+.btn-logout:hover {
+    background-color: #d32f2f; /* Darker red when hovered */
+}
+
+.btn-logout:focus {
+    outline: none;
+}
     </style>
 </head>
 
@@ -268,7 +293,7 @@
                                     <a class="nav-link btn btn-sm btn-outline-warning px-3 mx-2" href="#">Profile</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="#">Plan</a>
+                                    <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="{% url 'membership_plans'%}">Plan</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="#">Purchases</a>
@@ -305,7 +330,13 @@
                                     style="font-size: 1.2rem; font-weight: bold;">
                                     Search
                                 </button>
+
+                                
                             </div>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="{%url 'logout'%}" class="btn-logout">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </a>
                         </div>
                     </div>
                 </nav>

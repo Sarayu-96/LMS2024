@@ -4,8 +4,6 @@ from .models import Author, Book, Genre, Plan, Plancategory # Other model import
 from django.forms import modelformset_factory
 
 # Create a formset for PlanCategory
-PlanCategoryFormSet = modelformset_factory(Plancategory, fields=('plan', 'genre'), extra=1)
-
 
 class userRegistrationForm(forms.ModelForm):
     password = forms.CharField(
@@ -51,8 +49,7 @@ class AuthorForm(forms.ModelForm):
         model = Author
         fields = ['name', 'bio', 'profile_image']
 
-
-class CategoryForm(forms.ModelForm):
+class GenreForm(forms.ModelForm):
     class Meta:
         model = Genre
         fields = ['name']
@@ -68,11 +65,6 @@ class PlanForm(forms.ModelForm):
 #         fields = ['plan', 'genre'] 
 
 class PlanCategoryForm(forms.ModelForm):
-    name = forms.CharField(
-        max_length=100,
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
-        label="Category Name"
-    )
     plans = forms.ModelMultipleChoiceField(
         queryset=Plan.objects.all(),
         widget=forms.CheckboxSelectMultiple,
@@ -88,6 +80,60 @@ class PlanCategoryForm(forms.ModelForm):
 
     class Meta:
         model = Plancategory  # Assuming Category is the model to which plans and genres are related
-        fields = ['name', 'plans', 'genres']
+        fields = ['plans', 'genres']
+
+class AddCategoryForm(forms.ModelForm):
+    plans = forms.ModelMultipleChoiceField(
+        queryset=Plan.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Subscription Plans"
+    )
+
+    class Meta:
+        model = Genre
+        fields = ['name']
+
+    def save(self, commit=True):
+        # Save the category instance
+        genre = super().save(commit=False)
+        if commit:
+            genre.save()
+        # Add selected plans to the PlanCategory table
+        if 'plans' in self.cleaned_data:
+            selected_plans = self.cleaned_data['plans']
+            for plan in selected_plans:
+                Plancategory.objects.create(plan=plan, genre=genre)
+        return genre
+    
+
+class EditCategoryForm(forms.ModelForm):
+    plans = forms.ModelMultipleChoiceField(
+        queryset=Plan.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Subscription Plans"
+    )
+
+    class Meta:
+        model = Genre
+        fields = ['name']
+
+    def save(self, commit=True):
+        # Save the category instance
+        genre = super().save(commit=False)
+        if commit:
+            genre.save()
+        # Add selected plans to the PlanCategory table
+        if 'plans' in self.cleaned_data:
+            selected_plans = self.cleaned_data['plans']
+            for plan in selected_plans:
+                Plancategory.objects.create(plan=plan, genre=genre)
+        return genre
+
+
+
+
+
 
 

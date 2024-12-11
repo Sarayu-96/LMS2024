@@ -1,255 +1,361 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Librarian Dashboard</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book List</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+
+
+
     <style>
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* Body Style */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: white;
-            color: #333;
-            display: flex;
-            min-height: 100vh;
-            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f4;
         }
 
-        /* Sidebar Section */
-        .sidebar {
-            width: 250px;
-            background-color: #2c3e50; /* Dark Blue */
-            color: #ecf0f1; /* Light Grey */
-            position: fixed;
+        /* Larger Navbar Styles */
+        .navbar {
+            background-color: #a15f07;
+            /* Blue color */
+            padding: 20px 0;
+            /* Increased padding for a bigger navbar */
+            position: sticky;
             top: 0;
-            left: 0;
-            height: 100%;
-            padding-top: 30px;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-            z-index: 100;
+            z-index: 1000;
+            /* Ensures the navbar stays on top of other elements */
         }
 
-        /* Sidebar Header */
-        .sidebar h1 {
+        .navbar a {
+            color: white !important;
+            font-size: 1.1rem;
+            /* Slightly larger font for better readability */
+        }
+
+        .navbar .navbar-brand {
+            font-size: 1.8rem;
+            /* Make the brand name larger */
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            /* Make the brand name larger */
+            font-family: Arial, Helvetica, sans-serif;
+            margin-left: 10px;
+
+        }
+
+        /* Banner Styles */
+        .banner {
+            background: #34d399;
+            /* Green Banner */
+            color: white;
             text-align: center;
-            font-size: 24px;
-            margin-bottom: 30px;
-            padding: 0;
-            font-weight: 700;
+            padding: 200px 20px;
+            /* Increased padding for a bigger banner */
+            font-size: 2rem;
+            /* Larger font size */
+            font-weight: bold;
+            margin-top: 30px;
+            /* Increased margin to make the banner stand out more */
         }
 
-        /* Sidebar Links */
-        .sidebar a {
-            display: block;
-            color: #ecf0f1;
-            padding: 12px 20px;
-            text-decoration: none;
+        .banner .offer {
+            font-size: 1.5rem;
+            /* Larger offer text */
+            color: #ffffff;
+            margin-top: 10px;
+        }
+
+        /* Book Grid Styles */
+        .book-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 20px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .book-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .book-author {
+            color: #555;
+        }
+
+        .book-price {
+            font-size: 1.1rem;
+            color: #28a745;
+            margin-top: 10px;
+        }
+
+        /* Search Bar Styles */
+        .search-bar {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-bar input {
+            width: 200%;
+            padding: 13px;
+            border: 4px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-left: 300px;
+        }
+
+        .search-bar .clear {
+            position: absolute;
+            right: -550px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #aaa;
+            font-size: 2rem;
+
+        }
+
+        /* Contact Info Section */
+        .contact-info {
+            background-color: #f8f9fa;
+            /* Light background color */
+            padding: 1px 0px;
+            text-align: center;
             font-size: 16px;
-            margin: 10px 0;
-            border-radius: 5px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            border-top: 1px solid #ddd;
         }
 
-        /* Sidebar Link Hover Effect */
-        .sidebar a:hover {
-            background-color: #f39c12; /* Accent Orange */
+        /* Flexbox for Contact Info */
+        .contact-info .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contact-info .contact-text {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .contact-info .details {
+            text-align: right;
+        }
+
+        .contact-info .details a {
+            color: #007bff;
+            /* Blue links */
+            text-decoration: none;
+        }
+
+        .contact-info .details a:hover {
+            text-decoration: underline;
+        }
+
+        /* Page Content */
+        .content {
+            padding: 60px 20px;
+            /* Padding to create space below the navbar */
+            height: 2000px;
+            /* Example content height to allow scrolling */
+        }
+
+        .view-details-btn {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007bff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        .view-details-btn:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-nav {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+            }
+
+            .input-group {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+        }
+        
+        footer {
+            background-color: #2c3e50;
             color: white;
-            transform: scale(1.05); /* Slight zoom effect */
-        }
-
-        /* Active Link Style */
-        .sidebar a.active {
-            background-color: #3498db; /* Active Link Background */
-            color: white;
-        }
-
-        /* Dropdown Styles */
-        .sidebar .dropdown {
+            padding: 20px 0;
+            text-align: center;
+            margin-top: auto;
             position: relative;
         }
 
-        .sidebar .dropdown-toggle {
-            padding: 12px 20px;
-            font-size: 16px;
-            color: #ecf0f1;
-            text-decoration: none;
-            display: block;
-            transition: background-color 0.3s ease;
-        }
-
-        .sidebar .dropdown-toggle:hover {
-            background-color: #f39c12;
-            color: white;
-        }
-
-        .sidebar .dropdown-menu {
-            display: none;
-            position: absolute;
-            left: 0;
-            background-color: #34495e;
-            width: 100%;
-            margin-top: 5px;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .sidebar .dropdown-menu li a {
-            padding: 10px;
-            color: white;
-            font-size: 14px;
-            text-decoration: none;
-            display: block;
-        }
-
-        .sidebar .dropdown-menu li a:hover {
-            background-color: #f39c12;
-        }
-
-        /* Show dropdown menu when toggled */
-        .sidebar .dropdown.open .dropdown-menu {
-            display: block;
-        }
-
-        /* Main Content Section */
-        .main-content {
-            margin-left: 250px; /* Offset content from the sidebar */
-            padding: 40px;
-            flex: 1;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 40px;
-        }
-
-        /* Main Content Header */
-        .main-content h2 {
-            font-size: 30px;
-            margin-bottom: 20px;
-        }
-
-        /* Main Content Paragraph */
-        .main-content p {
-            font-size: 16px;
-            margin-bottom: 30px;
-        }
-
-        /* Main Content Links */
-        .main-content a {
-            text-decoration: none;
+        footer a {
             color: #3498db;
-            font-weight: bold;
-            font-size: 14px;
-            transition: color 0.3s ease;
+            text-decoration: none;
         }
 
-        .main-content a:hover {
-            color: #1abc9c;
+        footer a:hover {
+            text-decoration: underline;
         }
+        #username:hover {
+            color: rgb(176, 11, 190); /* Change text color on hover */
+            text-decoration: underline; /* Add underline on hover */
+        }
+        /* Styling the Logout Button */
+.btn-logout {
+    background-color: #f44336; /* Red color for the logout button */
+    color: white;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
-        /* Footer */
-        footer {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            padding: 10px;
-            text-align: center;
-            font-size: 14px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
+.btn-logout i {
+    font-size: 1.2rem; /* Size of the logout icon */
+}
 
-        /* Responsive Design: For smaller screens */
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-            .main-content {
-                margin-left: 0;
-                padding: 20px;
-            }
-        }
+.btn-logout:hover {
+    background-color: #d32f2f; /* Darker red when hovered */
+}
+
+.btn-logout:focus {
+    outline: none;
+}
     </style>
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </head>
+
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <h1>Admin Dashboard</h1>
-        <a href="{% url 'landing_page' %}" class="active">Home</a>
-        <a href="{% url 'list_books' %}">View Books</a>
-        
-        <!-- Manage Books Dropdown -->
-        <!-- <div class="dropdown">
-            <a href="{% url 'add_book' %}" class="dropdown-toggle" id="manageBooksDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Manage Books
+    <!-- Navigation Bar -->
+    <div class="sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+            div class="container-fluid">
+            <!-- Brand -->
+            <a class="navbar-brand fw-bold" href="#">
+                <img src="/media/download(4).jpeg" alt="Logo" class="me-2"
+                    style="border-radius: 50%; width: 60px; height: 60px;margin-left: 5px;" />
+                ReadIt
             </a>
-            <ul class="dropdown-menu" aria-labelledby="manageBooksDropdown">
-                <li><a class="dropdown-item" href="{% url 'add_book' %}">Add Book</a></li>
-            </ul>
-        </div> -->
 
-        <a href="#">Manage Users</a>
-        <div class="'dropdown">
-            <!-- <button class="dropbtn">Manage Books</button> -->
-            <div class="dropdown-content">
-                <a href="{% url 'add_book' %}">Add Book</a>
-            </div>
+            <!-- Toggler -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        </div>
-        <!-- <a href="#">Manage Users</a> -->
-        <!-- manage_user -->
-        <div class="dropdown">
-            <!-- <button class="dropbtn">Manage Books</button> -->
-            <div class="dropdown-content">
-                <a href="{% url 'view_categories' %}">Manage Categories</a>
+            <!-- Collapsible Content -->
+            <div class="collapse navbar-collapse j  ustify-content-between" id="navbarNav">
+                <!-- Left Section -->
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="username"
+                            style="font-size: 20px; font-weight: bold; color: #14aedd !important; text-transform: capitalize; transition: color 0.3s ease; text-decoration: none !important;">
+                            {{user.username}}
+                        </a>
+                    </li>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-sm btn-outline-warning px-3 mx-2"
+                            href="{% url 'librarian_dashboard' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="#">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="{% url 'list_books' %}">Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="{% url 'view_authors' %}">Authors</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="{% url 'view_categories' %}">Category</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="{% url 'view_subscriptionplan' %}">Membership</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="#">Add Banner</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="#"><i class="fas fa-comment"></i></a>
+                    </li>
+                </ul>
+
+
+
+                <!-- Right Section: Search Bar -->
+                <div class="input-group shadow-lg" style="max-width: 600px; width: 100%;">
+                    <input type="text" id="searchInput"
+                        class="form-control form-control-lg rounded-start-pill border-0 px-4"
+                        placeholder="Search books, authors, or genres..." oninput="handleSearch()"
+                        style="font-size: 1.2rem;" />
+                    <button class="btn btn-warning rounded-end-pill px-4 text-white" onclick="clearSearch()"
+                        style="font-size: 1.2rem; font-weight: bold;">
+                        Search
+                    </button>
+
+
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="{%url 'logout'%}" class="btn-logout">
+                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                </a>
             </div>
-        </div>
-        <div class="dropdown">
-            <!-- <button class="dropbtn">Manage Books</button> -->
-            <div class="dropdown-content">
-                <a href="{% url 'view_subscriptionplan' %}">Manage Plans</a>
-            </div>
-        </div>
-        <div class="dropdown">
-            <!-- <button class="dropbtn">Manage Books</button> -->
-            <div class="dropdown-content">
-                <a href="{% url 'view_authors' %}">Manage Authors</a>
-            </div>
-        </div>
     </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <h2>Welcome, {{ user.username }}!</h2>
-        <p>Manage library operations efficiently with the tools below.</p>
-        <a href="#">Get Started</a>
+    </nav>
     </div>
+            </div>
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 Online Library. All rights reserved.</p>
-    </footer>
+            
+            <footer class="sticky-bottom">
+                <p>&copy; 2024 ReadIt. All rights reserved. <a href="/privacy">Privacy Policy</a></p>
+            </footer>
 
-    <!-- Initialize Bootstrap dropdown JS -->
-    <script>
-        var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
-        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-            return new bootstrap.Dropdown(dropdownToggleEl)
-        })
-    </script>
+            <!-- Bootstrap Bundle JS -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+            <script>
+                // JavaScript for search functionality
+                function handleSearch() {
+                    var input = document.getElementById("searchInput").value;
+                    if (input) {
+                        window.location.href = "/search/?query=" + input;  // Redirect to search page with query
+                    }
+                }
+
+                function clearSearch() {
+                    document.getElementById("searchInput").value = '';
+                    window.location.href = "/search";  // Reset to search page without query
+                }
+            </script>
 </body>
+
 </html>

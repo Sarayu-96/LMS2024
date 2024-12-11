@@ -173,6 +173,9 @@
                 <div class="collapse navbar-collapse d-lg-flex justify-content-between align-items-center" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item"><a class="nav-link" href="#">Welcome Guest</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'view_books' %}">Home</a>
+                        </li>
                         <li class="nav-item"><a class="nav-link btn btn-sm btn-outline-warning px-3 mx-2" href="{% url 'register' %}">Sign Up</a></li>
                         <li class="nav-item"><a class="nav-link btn btn-sm btn-outline-warning px-3 mx-2" href="{% url 'login' %}">Login</a></li>
                         <li class="nav-item"><a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="{% url 'membership_plans' %}">Membership Plans</a></li>
@@ -184,8 +187,19 @@
                 </div>
             </div>
         </nav>
+        <div class="contact-info">
+            <div class="container">
+              <div class="details">
+                <p>
+                  Toll-Free: <a href="tel:+18001234567">1-800-123-4567</a> | 
+                  Email: <a href="mailto:support@library.com">support@library.com</a> | 
+                  Address: 123 Library St, City, Country
+                </p>
+              </div>
+            </div>
+          </div>
     </div>
-    <h1 class="text-center mt-4">Membership Plans</h1>
+    <h1 class="text-center mt-4">Available Plans</h1>
 
     <div class="membership-plans-container">
         <div class="plans-grid-horizontal">
@@ -220,7 +234,7 @@
                         <li><i class="fas fa-check-circle"></i> 15% Discount for Purchases</li>
                     </ul>
                 {% endif %}
-                <a href="#" class="action-btn">Choose Plan</a>
+                <a href="{% url 'subscription_plan_view' %}" class="action-btn">Choose Plan</a>
             </div>
             {% endfor %}
         </div>
