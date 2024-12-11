@@ -1,0 +1,56 @@
+/* Notification List Styling */
+.notification-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.notification-container div {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #fff;
+}
+
+.notification-container div p {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.notification-container div small {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #999;
+}
+
+/* Read Notification */
+.notification-container div.read {
+    background: #e9ecef;
+}
+
+/* Unread Notification */
+.notification-container div.unread {
+    background: #dff9fb;
+}
+
+/* Button Styling */
+.notification-container button {
+    display: block;
+    margin: 10px auto;
+    padding: 8px 12px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.notification-container button:hover {
+    background: #0056b3;
+}

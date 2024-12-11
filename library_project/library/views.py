@@ -525,3 +525,20 @@ def book_reviews(request, book_id):
     book = get_object_or_404(Book, id=book_id)
     reviews = book.reviews.all()  # Fetch all reviews for this book
     return render(request, 'reviews/book_reviews.html', {'book': book, 'reviews': reviews})
+
+
+def all_notifications(request):
+    """Fetch and return all notifications for the logged-in user."""
+    if request.user.is_authenticated:
+        notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-created_at')
+        data = [
+            {
+                "id": notification.id,
+                "message": notification.message,
+                "created_at": notification.created_at.strftime('%Y-%m-%d %H:%M:%S')
+            }
+            for notification in notifications
+        ]
+        return JsonResponse({"notifications": data})
+    else:
+        return JsonResponse({"error": "User not authenticated"}, status=403)
