@@ -9,3 +9,5 @@ def notify_new_book(sender, instance, created, **kwargs):
         message = f"New Book Alert: '{instance.title}' by {instance.author.name} is now available in our library!"
         for user in users:
             Notification.objects.create(user=user, message=message)
+
+            

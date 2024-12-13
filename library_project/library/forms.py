@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.models import User  # Built-in User model
 from .models import Author, Book, Genre, Plan, Plancategory, Review # Other model imports
 from django.forms import modelformset_factory
+from django.db import models
+
 
 # Create a formset for PlanCategory
 
@@ -142,5 +144,12 @@ class ReviewForm(forms.ModelForm):
         }
 
 
+# class AddNotification(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+#     message = models.TextField()
+#     is_read = models.BooleanField(default=False)  # Track if the notification has been read
+#     created_at = models.DateTimeField(auto_now_add=True)
 
+#     def __str__(self):
+#         return f"Notification for {self.user.username}"
 

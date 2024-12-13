@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.utils.timezone import now
+from django.core.mail import send_mail
 
 
 
@@ -277,6 +278,8 @@ def add_author(request):
 
     # If the request is not a POST (GET request), you don't need to render anything
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
 # Update an existing author
 def update_author(request, author_id):
     author = get_object_or_404(Author,id=author_id)
@@ -289,6 +292,7 @@ def update_author(request, author_id):
         form = AuthorForm(instance=author)
     return render(request, 'update_author.html', {'form': form, 'author': author})
 
+
 # Delete an author
 def delete_author(request, author_id):
     author = get_object_or_404(Author, id=author_id)
@@ -296,7 +300,6 @@ def delete_author(request, author_id):
         author.delete()
         return redirect('view_authors')
     return render(request, 'delete_author.html', {'author': author})
-
 
 
 def view_categories(request):
@@ -312,7 +315,6 @@ def view_categories(request):
     return render(request, 'view_categories.html', {'categories': categories, 'plans_by_category': plans_by_category})
 
 
-
 # Delete a category
 def delete_category(request, genre_id):
     category = get_object_or_404(Genre, id=genre_id)
@@ -320,8 +322,6 @@ def delete_category(request, genre_id):
         category.delete()
         return redirect('view_categories')
     return render(request, 'delete_category.html', {'category': category})
-
-
 
 
 def add_modal_author(request):
@@ -347,6 +347,7 @@ def view_plans(request):
     plangenre_form = PlanCategoryForm()
     plans = Plan.objects.all()
     return render(request, 'view_plans.html', {'plans': plans, 'form': form, 'plangenre_form': plangenre_form})
+
 
 def add_plan(request):
     if request.method == "POST":
@@ -397,6 +398,7 @@ def edit_plan(request, plan_id):
         'associated_genres': associated_genres,
         'plan_category_form' : plan_category_form
     })
+
 
 def delete_plan(request, plan_id):
     # Fetch the plan object from the database
@@ -452,9 +454,49 @@ def edit_category(request,genre_id):
 #     })
 
 
+def subscribe_plan(request, id):
+    pass
+
+def view_membership_plans(request):
+    pass
+
+
+def subscription_expiry_notifications(request):
+    pass
+
+
+def check_subscription_expiry():
+    # Get all active subscriptions
+    subscriptions = Subscription.objects.filter(status='active')
+    
+    for subscription in subscriptions:
+        days_remaining = (subscription.end_date - now()).days
+        if days_remaining <= 7:  # 7 days before expiration
+            # Create a notification
+            Notification.objects.create(
+                user=subscription.user,
+                message=f"Your subscription to the {subscription.plan.name} plan will expire in {days_remaining} days. Renew now!",
+            )
+            # Optionally, send an email
+            send_mail(
+                'Subscription Expiration Reminder',
+                f'Your subscription to the {subscription.plan.name} plan will expire in {days_remaining} days. Renew now!',
+                'no-reply@yourdomain.com',
+                [subscription.user.email],
+                fail_silently=False,
+            )
+
+def notify_new_book(sender, instance, created, **kwargs):
+    if created:  # Only notify on new book creation
+        users = User.objects.all()  # Notify all users
+        message = f"New Book Alert: '{instance.title}' by {instance.author.name} is now available in our library!"
+        for user in users:
+            Notification.objects.create(user=user, message=message)
+
+
 def notifications_view(request):
     notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'notification.html', {'notification': notifications})
+    return render(request, 'notification.html', {'notifications': notifications})
 
 def subscription_expiry_notifications(request):
     """Notify users whose subscriptions are about to expire."""
@@ -469,7 +511,7 @@ def subscription_expiry_notifications(request):
         for sub in subscriptions
     ]
 
-    return JsonResponse({"notifications": notifications})
+    return render(request,"notification.html",{"notifications": notifications})
 
 
 def new_book_notifications(request):
@@ -486,7 +528,7 @@ def new_book_notifications(request):
         for book in recent_books
     ]
 
-    return JsonResponse({"notifications": notifications})
+    return render(request,"notification.html",{"notifications": notifications})
 
 
 def all_notifications(request):
@@ -499,46 +541,11 @@ def all_notifications(request):
         "book_notifications": book_notifications,
     })
 
-def subscribe_plan(request, id):
-    pass
-
-def view_membership_plans(request):
-    pass
+    
 
 
-@login_required
-def add_review(request, book_id):
-    book = get_object_or_404(Book, id=book_id)
-    if request.method == 'POST':
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.user = request.user
-            review.book = book
-            review.save()
-            return redirect('book_detail', book_id=book.id)  # Redirect to book detail page
-    else:
-        form = ReviewForm()
-    return render(request, 'add_review.html', {'form': form, 'book': book})
-
-def book_reviews(request, book_id):
-    book = get_object_or_404(Book, id=book_id)
-    reviews = book.reviews.all()  # Fetch all reviews for this book
-    return render(request, 'reviews/book_reviews.html', {'book': book, 'reviews': reviews})
 
 
-def all_notifications(request):
-    """Fetch and return all notifications for the logged-in user."""
-    if request.user.is_authenticated:
-        notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-created_at')
-        data = [
-            {
-                "id": notification.id,
-                "message": notification.message,
-                "created_at": notification.created_at.strftime('%Y-%m-%d %H:%M:%S')
-            }
-            for notification in notifications
-        ]
-        return JsonResponse({"notifications": data})
-    else:
-        return JsonResponse({"error": "User not authenticated"}, status=403)
+
+
+

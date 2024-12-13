@@ -33,10 +33,10 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('subscription/', views.subscription_plan_view, name='subscription_plan_view'),
     path('subscribe/<int:plan_id>/', views.subscribe_plan, name='subscribe_plan'),
+    path('check_subscription_expiry/', views.check_subscription_expiry, name='check_subscription_expiry'),
     path('notifications/subscription-expiry/', views.subscription_expiry_notifications, name='subscription_expiry_notifications'),
-    path('notifications/new-releases/', views.new_book_notifications, name='new_book_notifications'),
-    path('notifications/', views.all_notifications, name='all_notifications')    
+    path('notifications/', views.new_book_notifications, name='new_book_notifications'),
+    path('notifications/', views.all_notifications, name='all_notifications')
     
-   
-
+    
 ]

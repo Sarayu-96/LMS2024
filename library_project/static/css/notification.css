@@ -54,3 +54,38 @@
 .notification-container button:hover {
     background: #0056b3;
 }
+
+.notification-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+}
+
+.notification-popup h4 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.notification-popup p {
+    margin: 5px 0;
+}
+
+.notification-popup button {
+    background-color: #FF5733;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.notification-popup button:hover {
+    background-color: #FF2D00;
+}

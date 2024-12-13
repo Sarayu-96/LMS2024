@@ -92,12 +92,14 @@ class Book(models.Model):
     def __str__(self):
         return self.title
     
+    
 class Plancategory(models.Model):
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name='plans')
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE, related_name='plans')
 
     def __str__(self):
         return f"{self.plan.name}"
+
 
 class Subscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscriptions')
@@ -162,6 +164,7 @@ class Notification(models.Model):
     def __str__(self):
         return f"Notification for {self.user.username}"
 
+
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reviews')
@@ -172,6 +175,7 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.book.title} - {self.rating}"
+
 
 
 

@@ -1,0 +1,46 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    color: #343a40;
+}
+
+.notification-container {
+    margin: 20px auto;
+    width: 90%;
+    max-width: 600px;
+}
+
+.notification {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.notification.unread {
+    background-color: #e7f5ff; /* Light blue for unread notifications */
+    border-color: #70c9ff;
+}
+
+.notification p {
+    font-size: 16px;
+    margin: 0 0 10px;
+    color: #212529;
+}
+
+.notification small {
+    font-size: 12px;
+    color: #6c757d;
+    align-self: flex-end;
+}
+
+.notification.read small {
+    font-style: italic; /* Italicize the timestamp for read notifications */
+}
