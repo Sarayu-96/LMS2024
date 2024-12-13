@@ -143,7 +143,12 @@ class ReviewForm(forms.ModelForm):
             'review_text': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
 
-
+class RentBookForm(forms.Form):
+    book = forms.ModelChoiceField(
+        queryset=Book.objects.filter(availability=True),
+        empty_label="Select a Book",
+        widget=forms.Select(attrs={'class': 'form-control'}),
+    )
 # class AddNotification(models.Model):
 #     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
 #     message = models.TextField()

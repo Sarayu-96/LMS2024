@@ -36,7 +36,12 @@ urlpatterns = [
     path('check_subscription_expiry/', views.check_subscription_expiry, name='check_subscription_expiry'),
     path('notifications/subscription-expiry/', views.subscription_expiry_notifications, name='subscription_expiry_notifications'),
     path('notifications/', views.new_book_notifications, name='new_book_notifications'),
-    path('notifications/', views.all_notifications, name='all_notifications')
+    path('notifications/', views.all_notifications, name='all_notifications'),
+    path('dashboard/', views.user_dashboard, name='user_dashboard'),
+    path('rent/<int:book_id>/', views.rent_book, name='rent_book'),
+    path('rentals/', views.rentals, name='rentals'),
+    # path('return/<int:rental_id>/', views.return_book, name='return_book'),
+    # path('renew/<int:rental_id>/', views.renew_rental, name='renew_rental')
     
     
 ]

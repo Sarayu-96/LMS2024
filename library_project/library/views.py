@@ -4,13 +4,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .forms import AddCategoryForm, AuthorForm, BookForm, AddCategoryForm, EditCategoryForm,PlanForm, PlanCategoryForm, ReviewForm
-from .models import Author, Genre, Book, Notification, Plan, Plancategory, Subscription
+from .models import Author, Genre, Book, Notification, Plan, Plancategory, Rental, Subscription
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.core.mail import send_mail
+from django.contrib import messages
 
 
 
@@ -536,14 +537,53 @@ def all_notifications(request):
     subscription_notifications = subscription_expiry_notifications(request).content
     book_notifications = new_book_notifications(request).content
 
-    return JsonResponse({
+    return render(request,"notification.html",{
         "subscription_notifications": subscription_notifications,
         "book_notifications": book_notifications,
     })
 
-    
 
+@login_required
+def user_dashboard(request):
+    # Fetch active rentals for the user
+    rentals = Rental.objects.filter(user=request.user, status='active')
+    books = Book.objects.filter(availability=True)
+    return render(request, 'dashboard.html', {'rentals': rentals, 'books': books})
 
+@login_required
+def rent_book(request, book_id):
+    # Fetch the book to be rented
+    book = get_object_or_404(Book, id=book_id, availability=True)
+
+    # Check if the user has an active subscription
+    subscription = Subscription.objects.filter(user=request.user, status='active').first()
+    if not subscription:
+        messages.error(request, "You need an active subscription to rent a book.")
+        return redirect('user_dashboard')
+
+    # Check if the user exceeds the max_books_allowed
+    active_rentals = Rental.objects.filter(user=request.user, status='active').count()
+    if active_rentals >= subscription.plan.max_books_allowed:
+        messages.error(request, "You have reached the maximum allowed rentals for your plan.")
+        return redirect('user_dashboard')
+
+    # Create the rental record
+    rental = Rental.objects.create(
+        user=request.user,
+        book=book,
+        end_date=now() + timedelta(days=subscription.plan.max_rent_duration),
+        status='active'
+    )
+    # Update book availability
+    book.availability = False
+    book.save()
+
+    messages.success(request, f"You have successfully rented '{book.title}'.")
+    return redirect('user_dashboard')
+
+def rentals(request):
+    user_rentals = Rental.objects.filter(user=request.user)
+    return render(request, 'rentals.html', {'rentals': user_rentals})
 
 
 

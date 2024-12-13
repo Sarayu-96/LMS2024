@@ -1,0 +1,157 @@
+/* General Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa; /* Light background for better readability */
+    color: #333;
+}
+
+h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2c3e50; /* Darker shade for headings */
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px 0;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 15px;
+}
+
+/* Card Styling */
+.book-card, .rental-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 20px;
+    padding: 15px;
+    text-align: center;
+}
+
+.book-card:hover, .rental-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.book-card img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.book-title, .rental-book-title {
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 8px;
+}
+
+.book-author, .rental-return-date {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+}
+
+.book-price {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #27ae60;
+    margin-bottom: 10px;
+}
+
+/* Buttons */
+a.rent-book-btn, a {
+    display: inline-block;
+    text-decoration: none;
+    padding: 8px 16px;
+    margin-top: 5px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    background-color: #3498db;
+    color: #fff;
+    transition: background-color 0.3s ease;
+}
+
+a.rent-book-btn:hover, a:hover {
+    background-color: #2980b9;
+}
+
+a.return-btn, a.renew-btn {
+    margin: 0 5px;
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+    .col-md-3, .col-md-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .book-card, .rental-card {
+        margin-bottom: 15px;
+    }
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.rental-card, .book-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin: 10px 0;
+}
+
+.rental-card .rental-book-title,
+.book-card .book-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.rental-card .rental-return-date,
+.book-card .book-author {
+    font-size: 14px;
+    color: #555;
+}
+
+.book-card .book-price {
+    font-size: 14px;
+    color: #28a745;
+    font-weight: bold;
+}
+
+.btn {
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.text-muted {
+    color: #999;
+}

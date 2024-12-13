@@ -12,6 +12,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
 
 
 
@@ -301,7 +302,7 @@
                                     <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="#">Purchases</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="#">Rentals</a>
+                                    <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="{% url 'rentals' %}">Rentals</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link btn btn-sm btn-warning px-3 mx-2" href="{% url 'all_notifications' %}">Notification</a>
@@ -322,7 +323,6 @@
                                     </a>
                                 </li>
                             </ul>
-
 
 
                             <!-- Right Section: Search Bar -->
@@ -360,6 +360,8 @@
                 </div>
             </div>
 
+
+
             <!-- Book Collection -->
             <div class="container my-5">
                 <h1 class="text-center mb-5">Best Sellers</h1>
@@ -381,9 +383,7 @@
                     {% endfor %}
                 </div>
             </div>
-            <footer class="sticky-bottom">
-                <p>&copy; 2024 ReadIt. All rights reserved. <a href="/privacy">Privacy Policy</a></p>
-            </footer>
+            
 
             <!-- Bootstrap Bundle JS -->
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -403,5 +403,7 @@
                 }
             </script>
 </body>
-
+<footer class="sticky-bottom">
+    <p>&copy; 2024 ReadIt. All rights reserved. <a href="/privacy">Privacy Policy</a></p>
+</footer>
 </html>
